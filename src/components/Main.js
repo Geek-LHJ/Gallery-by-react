@@ -2,7 +2,7 @@
 * 无法判断组件的初始化函数运行getInitialState()，书写上存在问题；
 * 同时渲染后的函数conponentDidMount()没有执行；
 * pos 属性；imgsArrangeArr 属性；
-* 已经解决问题，实现了React画廊的上半部分
+* 已经解决问题，实现了React画廊的上半部分,保存并提交
 */
 
 
