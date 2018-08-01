@@ -1,8 +1,16 @@
-//CSS
+/* 可能的问题：
+* 无法判断组件的初始化函数运行getInitialState()，书写上存在问题；
+* 同时渲染后的函数conponentDidMount()没有执行；
+* pos 属性；imgsArrangeArr 属性；
+*/
+
+
+
 require('normalize.css/normalize.css');
 require('styles/App.css');
 
 import React from 'react';
+
 import ReactDOM from 'react-dom';
 
 //引入图片的JSON格式数据
@@ -34,13 +42,13 @@ let ImgFigure= React.createClass({
 
     let styleObj= {};
 
-    //如果props属性中制定了这张图片的位置，则使用
+    //如果props属性中指定了这张图片的位置，则使用
     if(this.props.arrange.pos){
       styleObj= this.props.arrange.pos;
     }
 
     return (
-      <figure className="img-figure" style={styleObj}>
+      <figure className="img-figure" style={styleObj} >
         <img src={this.props.data.imageURL} alt={this.props.data.title} className="img-pic"/>
         <figcaption>
           <h2 className="img-title">{this.props.data.title}</h2>
@@ -51,6 +59,19 @@ let ImgFigure= React.createClass({
 });
 
 class AppComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      imgsArrangeArr:[
+        {
+          // pos:{
+          //   left:'0px',
+          //   top: '0px'
+          // }
+        }
+      ]
+    };
+  }
   Constant = {
     centerPos:{//中心
       left:0,
@@ -58,7 +79,8 @@ class AppComponent extends React.Component {
     },
     hPosRange:{//水平方向分区取值范围
       leftSecX:[0, 0],
-      rightSecX:[0, 0]
+      rightSecX:[0, 0],
+      y:[0, 0]
     },
     vPosRange:{//垂直方向分区取值范围
       x:[0, 0],
@@ -66,17 +88,7 @@ class AppComponent extends React.Component {
     }
   };
 
-  state = {
-    imgsArrangeArr:[
-      // {
-      //   pos:{
-      //     left:'0',
-      //     top:'0'
-      //   }
-      // }
-    ]
-  };
-  // 重新布局所有的图片
+  // 重新布局所有的图片，指定居中排布哪个图片
   reArrange(centerIndex){
     let imgsArrangeArr= this.state.imgsArrangeArr,
         Constant= this.Constant,
@@ -89,10 +101,10 @@ class AppComponent extends React.Component {
         vPosRangeTopY= vPosRange.topY,
         vPosRangeX= vPosRange.x,
 
-        imgsArrangeTopArr= [],
+        imgsArrangeTopArr= [],//上侧数组
         topImgNum= Math.ceil(Math.random()* 2),//取一个或不取
-        topImgSpliceIndex= 0,
-        imgsArrangeCenterArr= imgsArrangeArr.splice(centerIndex, 1);
+        topImgSpliceIndex= 0,//用于标记上侧图片取自于数组的哪个位置，默认为0
+        imgsArrangeCenterArr= imgsArrangeArr.splice(centerIndex, 1);//取出一张图片
 
         //首先居中 centerIndex的图片
         imgsArrangeCenterArr[0].pos= centerPos;
@@ -123,11 +135,11 @@ class AppComponent extends React.Component {
             left:getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
           };
         }
-
+        //先获取上侧的图片，返回到图片组中
         if(imgsArrangeTopArr && imgsArrangeTopArr[0]){
           imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
         }
-
+        //获取中心的图片，返回到图片组中
         imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
 
         this.setState({
@@ -135,28 +147,34 @@ class AppComponent extends React.Component {
         });
   }
 
-  getInitialState(){
-    return {
-      imgsArrangeArr:[
-        // {
-        //   pos:{
-        //     left:'0',
-        //     top:'0'
-        //   }
-        // }
-      ]
-    };
-  }
-//组件加载后，为每张图片计算其位置的范围
-  conponentDidMount(){
-    //首先拿到舞台的大小
+
+
+  // getInitialState(){
+  //   // console.log('getInitialState');
+  //   return {
+  //     imgsArrangeArr:[
+  //       {
+  //         // pos:{
+  //         //   left: '0',
+  //         //   top: '0'
+  //         // }
+  //       }
+  //     ]
+  //   };
+  // }
+
+  //组件加载后，为每张图片计算其位置的范围
+  componentDidMount(){
+
+    //  console.log('conponentDidMount');
+    //首先拿到舞台的大小,注意scroolWidth（对象实际宽度，包括滚动条，边线宽度）、clintWidth（对象内容的可视区宽度）、 offsetWidth（对象整体实际宽度）三者的区别
     let stageDOM= ReactDOM.findDOMNode(this.refs.stage),
         stageH= stageDOM.scrollHeight,
         stageW= stageDOM.scrollWidth,
         harfStageH=Math.ceil(stageH/ 2),
         harfStageW=Math.ceil(stageW/ 2);
-    //拿到一个imageFogure 的大小
-    let ImgFigureDOM= ReactDOM.findDOMNode(this.refs.ImgFigure0),
+    //拿到一个imageFigure 的大小
+    let ImgFigureDOM= ReactDOM.findDOMNode(this.refs.imageFigure0),
         imgW= ImgFigureDOM.scrollWidth,
         imgH= ImgFigureDOM.scrollHeight,
         harfImgW= Math.ceil(imgW/ 2),
@@ -167,15 +185,15 @@ class AppComponent extends React.Component {
       top: harfStageH - harfImgH
     };
     //计算左侧、右侧排布图片的范围
-    this.Constant.hPosRange.leftSecX[0] = -harfImgW;
+    this.Constant.hPosRange.leftSecX[0] = 0 -harfImgW;
     this.Constant.hPosRange.leftSecX[1] = harfStageW- harfImgW* 3;
     this.Constant.hPosRange.rightSecX[0] = harfStageW+ harfImgW;
     this.Constant.hPosRange.rightSecX[1] = stageW- harfImgW;
-    this.Constant.hPosRange.y[0] = -harfImgH;
+    this.Constant.hPosRange.y[0] = 0- harfImgH;
     this.Constant.hPosRange.y[1]= stageH- harfImgH;
 
     //计算上侧图片排布的取值范围
-    this.Constant.vPosRange.topY[0]= -harfImgH;
+    this.Constant.vPosRange.topY[0]= 0- harfImgH;
     this.Constant.vPosRange.topY[1]= harfStageH- harfImgH* 3;
     this.Constant.vPosRange.x[0]= harfStageW- imgW;
     this.Constant.vPosRange.x[1]= harfStageW;
@@ -196,7 +214,6 @@ class AppComponent extends React.Component {
           }
         };
       }
-
       imgFigures.push(<ImgFigure data= {value} ref={'imageFigure'+ index} arrange={this.state.imgsArrangeArr[index]}/>);
     });
 
