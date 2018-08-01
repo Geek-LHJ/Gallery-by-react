@@ -39,14 +39,5 @@ module.exports = {
       'react/lib/ReactMount': 'react-dom/lib/ReactMount'
     }
   },
-  module: {
-    rules: [
-      {
-       test: /\.json$/,
-       use: [
-         'json-loader'
-       ]
-      }
-    ]
-  }
+  module: {}
 };
