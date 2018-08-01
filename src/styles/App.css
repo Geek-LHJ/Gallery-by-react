@@ -30,8 +30,8 @@ html, body{
 .img-sec .img-figure{
   position: absolute;
 
-  width: 400px;/* 图片宽度设置为320px，加上左右各40px的padding */
-  height: 360px;/* 图片高度设置为240px，加上上下各40px的padding，以及40的title */
+  width: 320px;/* 图片宽度设置为320px，加上左右各40px的padding */
+  height: 290px;/* 图片高度设置为240px，加上上下各40px的padding，以及40的title */
   margin: 0;
   padding: 40px;
 
@@ -50,8 +50,8 @@ html, body{
 }
 
 .img-sec .img-figure .img-pic{
-  width: 320px;
-  height: 240px;
+  width: 240px;
+  height: 170px;
 }
 /* image -- end */
 
