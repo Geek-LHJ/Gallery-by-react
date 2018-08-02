@@ -32,11 +32,36 @@ html, body{
 
   width: 320px;/* 图片宽度设置为320px，加上左右各40px的padding */
   height: 290px;/* 图片高度设置为240px，加上上下各40px的padding，以及40的title */
-  margin: 0;
+  /* margin: 0;
   padding: 40px;
-
+  cursor: pointer;
   background-color: #fff;
-  box-sizing: border-box;
+  box-sizing: border-box; */
+
+            /* position:absolute;
+            width:320px;
+            height:360px; */
+            padding:40px;
+
+            cursor:pointer;
+            box-sizing:border-box;
+            transform-style:preserve-3d;
+            background-color:#fff;
+
+            perspective:1800px;
+            transform-origin:0 50% 0;
+            transition:transform 0.4s ease-in-out,left 0.4s ease-in-out, top 0.4s ease-in-out;
+
+}
+.img-sec .img-figure img{
+  width:240px;
+  height:240px;
+}
+
+.is-inverse{
+  transform: rotateY(180deg);
+  transform:translateX(320px) rotateY(180deg);
+
 }
 
 .img-sec figcaption{
@@ -47,6 +72,24 @@ html, body{
   margin-top: 20px;
   color: #a7a0a2;
   font-size: 16px;
+}
+
+.img-sec .img-back{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  padding: 50px 40px;
+  overflow: auto;
+
+  color:#a7a0a2;
+  font-size:22px;
+  line-height: 1.25;
+  text-align:center;
+  background-color:#fff;
+  box-sizing:border-box;
+  transform:rotateY(180deg) translateZ(1px);
 }
 
 .img-sec .img-figure .img-pic{
